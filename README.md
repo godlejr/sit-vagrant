@@ -172,14 +172,14 @@ end
 ```
 
 * vm 생성을 위한 정의는 크게 master와 node-#로 구분됨
- - master
- * master의 경우 1개만을 생성하도록 지정
- * .vm.provision을 통해 스크립트를 실행하거나 파일을 복사하여 프로비저닝
+	- master
+		+ master의 경우 1개만을 생성하도록 지정
+  		+ .vm.provision을 통해 스크립트를 실행하거나 파일을 복사하여 프로비저닝
 
 * master.vm.provision "0"에서 kubeconfig파일과 워커노드 조인을 위한 토큰 커맨드를 join.sh파일로 생성
- - node-#
- * 변수 NODE_COUNT 에서 지정된 개수에 따라 반복 수행
- * 앞서 master 프로비저닝시 생성된 join.sh를 이용하여 클러스터에 조인
+	- node-#
+ 		+ 변수 NODE_COUNT 에서 지정된 개수에 따라 반복 수행
+ 		+ 앞서 master 프로비저닝시 생성된 join.sh를 이용하여 클러스터에 조인
 
 ```
 #실행 및 확인
