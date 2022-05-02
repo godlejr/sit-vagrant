@@ -169,8 +169,7 @@ Vagrant.configure("2") do |config|
     end
   end
 end
-
-≈
+```
 
 * vm 생성을 위한 정의는 크게 master와 node-#로 구분됨
 ** master
