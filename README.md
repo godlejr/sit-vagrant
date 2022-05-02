@@ -2,8 +2,6 @@
 # Vagrantfile and Scripts Developer Environment 
 
 ## Kubernetes, Vagrant로 로컬 환경 구성
-## kubernetesvagrantdockerinstall
-
 
 * github : https://github.com/Great-Stone/vagrant-k8s(opens new window)
 
