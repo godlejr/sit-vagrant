@@ -24,7 +24,7 @@ vagrantfile 구성시 해당 ip 설정 부분을 상단의 NETWORK_SUB 부분에
 네트워크 구성 설정에 따라 클러스터 간 통신이 안될 수 있음에 주의
 vagrantfile의 START_IP를 활용하여 마스터 노드 및 워커 노드의 ip를 부여하는 방식으로 구성되었으나 변경 가능
 
-```yaml
+```bash
 #구성 설명
 #디렉토리/파일 구조
 #실행 전
@@ -53,7 +53,7 @@ vagrantfile의 START_IP를 활용하여 마스터 노드 및 워커 노드의 ip
 * vagrantfile에서 provision으로 호출
 * pv.sh는 K8s master 노드 구성 후 디렉토리 생성 후 pv.yaml을 통해 pv 구성
 
-```yaml
+```bash
 #실행 후
 ├── 1.18
 │   ├── .kube
@@ -80,7 +80,7 @@ vagrantfile의 START_IP를 활용하여 마스터 노드 및 워커 노드의 ip
 * join.sh : 워커노드의 클러스터 조인을 위한 스크립트
 * k8s-pv 디렉토리 : pv를 위한 디렉토리 구성
 
-```yaml
+```bash
 #vagrantfile - variable
 
 IMAGE_NAME = "bento/ubuntu-20.04"
@@ -117,7 +117,7 @@ KUBE_VER = "1.#{K8S_MINOR_VERSION}.8-00"
 |KUBE_VER	K8s| 관련 패키지 버전|
 
 
-```yaml
+```bash
 #vagrantfile - vm
 
 Vagrant.configure("2") do |config|
@@ -197,7 +197,7 @@ cli doc : https://www.vagrantup.com/docs/cli(opens new window)
 * vagrant ssh vm-name : config.vm.define 에 선언된 아이디에 해당하는 vm에 ssh 접속 e.g. : vagrant ssh master
 * vagrant destroy : 프로비저닝된 vm 삭제
 
-```yaml
+```bash
 #Check kubeconfig
 master노드 프로비저닝 과정에서 .kube/config를 생성하므로, 해당 kubeconfig를 사용하여 호스트 환경에서 kubectl 사용 가능
 
