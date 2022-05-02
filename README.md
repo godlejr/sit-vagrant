@@ -1,8 +1,8 @@
 
 # Vagrantfile and Scripts Developer Environment 
 
-##Kubernetes, Vagrant로 로컬 환경 구성
-##kubernetesvagrantdockerinstall
+## Kubernetes, Vagrant로 로컬 환경 구성
+## kubernetesvagrantdockerinstall
 
 
 * github : https://github.com/Great-Stone/vagrant-k8s(opens new window)
@@ -16,7 +16,7 @@ Windows는 테스트 필요
 Virtualbox : https://www.virtualbox.org(opens new window)
 Vagrant : https://www.vagrantup.com(opens new window)
 
-####Virtualbox 네트워크 구성
+#### Virtualbox 네트워크 구성
 
 K8s vm이 사용하기 위한 네트워크를 추가하여 구성
 기존 네트워크를 사용하고 싶다면 vagrantfile의 *.vm.network 부분의 ip에 수정 필요
@@ -40,18 +40,18 @@ vagrantfile의 START_IP를 활용하여 마스터 노드 및 워커 노드의 ip
 <반복>
 ```
 
-버전별로 디렉토리가 분류되어있음
-1.18~1.20 은 ubuntu 18.04 LTS 기반
-1.21~1.23 은 utuntu 20.04 LTS 기반
-vagrantfile
-vagrant 실행 정의
-version2 사용
-kube.sh
-vagrantfile에서 provision으로 호출
-K8s 설치에 필요한 패키지 설치 및 실행
-pv.sh, pv.yaml
-vagrantfile에서 provision으로 호출
-pv.sh는 K8s master 노드 구성 후 디렉토리 생성 후 pv.yaml을 통해 pv 구성
+* 버전별로 디렉토리가 분류되어있음
+* 1.18~1.20 은 ubuntu 18.04 LTS 기반
+* 1.21~1.23 은 utuntu 20.04 LTS 기반
+* vagrantfile
+* vagrant 실행 정의
+* version2 사용
+* kube.sh
+* vagrantfile에서 provision으로 호출
+* K8s 설치에 필요한 패키지 설치 및 실행
+* pv.sh, pv.yaml
+* vagrantfile에서 provision으로 호출
+* pv.sh는 K8s master 노드 구성 후 디렉토리 생성 후 pv.yaml을 통해 pv 구성
 
 ```yaml
 #실행 후
@@ -75,10 +75,10 @@ pv.sh는 K8s master 노드 구성 후 디렉토리 생성 후 pv.yaml을 통해 
 ```
 
 
-.kube 디렉토리 : kubernetes credential 및 접속 정보 생성
-.vagrant 디렉토리 : vagrant 실행 후 vm 정보 업데이트
-join.sh : 워커노드의 클러스터 조인을 위한 스크립트
-k8s-pv 디렉토리 : pv를 위한 디렉토리 구성
+* .kube 디렉토리 : kubernetes credential 및 접속 정보 생성
+* .vagrant 디렉토리 : vagrant 실행 후 vm 정보 업데이트
+* join.sh : 워커노드의 클러스터 조인을 위한 스크립트
+* k8s-pv 디렉토리 : pv를 위한 디렉토리 구성
 
 ```yaml
 #vagrantfile - variable
