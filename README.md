@@ -358,8 +358,8 @@ date -d  '2022-01-01T03:00:00Z' +"%s%N"
 date --date='@1643550000'
 
 
-# IDE setup for Vagrant 
-## VS code 에서 vagrant 관리
+# Setup for Micro Service Architeure   
+## VS code for Vagrant
 VS code 설치 : https://code.visualstudio.com/download 
 
 #### VS code Extension(확장프로그램) 설치
@@ -381,6 +381,23 @@ VS code 설치 : https://code.visualstudio.com/download
 - Master 접속 확인
 
 <img width="1379" alt="스크린샷 2022-05-20 오전 9 17 11" src="https://user-images.githubusercontent.com/24773549/169424328-68acf607-78be-410f-a634-592bb78323db.png">
+
+#### Kafka 설치
+helm(쿠버네티스 용 패키지 매니저)으로 설치해도 되지만 Kube 의존없이 수행하기 위해 master에 카프카 설치
+
+- Open JDK 11 설치
+
+```shell
+sudo apt-get update 
+sudo apt-get install openjdk-11-jdk 
+```
+
+- Kafka 설치 (version kafka_2.13-2.8.1) 
+
+```shell
+wget https://dlcdn.apache.org/kafka/2.8.1/kafka_2.13-2.8.1.tgz 
+tar xvfz kafka_2.13-2.8.1.tgz 
+```
 
 
 
