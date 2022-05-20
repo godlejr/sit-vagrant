@@ -356,3 +356,33 @@ https://storage.googleapis.com/kubernetes-release/release/v1.23.0/bin/windows/am
 ### date
 date -d  '2022-01-01T03:00:00Z' +"%s%N"
 date --date='@1643550000'
+
+
+# IDE setup for Vagrant 
+## VS code 에서 vagrant 관리
+VS code 설치 : https://code.visualstudio.com/download 
+
+#### VS code Extension(확장프로그램) 설치
+
+- ssh-development 설치
+
+- vagrant 경로에서 vagrant ssh 설정 값 복사
+
+```shell
+ vagrant ssh-config
+```
+
+- ssh-development 에서 ssh-target 경로(.../user/ssh/config) 설정해서 복사한 vagrant ssh 설정 값 붙여넣기
+
+- Master, node1, node2 확인
+
+<img width="892" alt="스크린샷 2022-05-20 오전 9 14 31" src="https://user-images.githubusercontent.com/24773549/169424150-1ec1052e-29c8-4ad6-ae17-bcfdac0a4f7c.png">
+
+- Master 접속 확인
+
+<img width="1379" alt="스크린샷 2022-05-20 오전 9 17 11" src="https://user-images.githubusercontent.com/24773549/169424328-68acf607-78be-410f-a634-592bb78323db.png">
+
+
+
+
+
