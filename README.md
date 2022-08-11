@@ -399,6 +399,223 @@ wget https://dlcdn.apache.org/kafka/2.8.1/kafka_2.13-2.8.1.tgz
 tar xvfz kafka_2.13-2.8.1.tgz 
 ```
 
+# Kubernetes CronJob 생성
+
+## 사전 프로그램 & 조치
+SSL을 네트워크팀 담당자한테 할당 받아야함(port : 443 뚫려야함)
+
+1. Vagrant 내 도커 설치 -(참고) https://dongle94.github.io/docker/docker-ubuntu-install/  
+2. Vagrant 내 AWS CLI 설치
+```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+```
+
+```bash
+sudo apt-get install unzip
+```
+
+```bash
+unzip awscliv2.zip
+```
+
+```bash
+sudo ./aws/install
+```
+
+
+### 우분투 타임존 설정
+```bash
+sudo dpkg-reconfigure tzdata
+```
+
+
+## 우분투 Repository Source List (AWS EC2 서버 기준 설정)
+
+```bash
+sudo cp /etc/apt/sources.list /etc/apt/sources_temp.list 
+```
+
+```bash
+sudo vi /etc/apt/sources.list
+```
+
+```
+## Note, this file is written by cloud-init on first boot of an instance
+## modifications made here will not survive a re-bundle.
+## if you wish to make changes you can:
+## a.) add 'apt_preserve_sources_list: true' to /etc/cloud/cloud.cfg
+##     or do the same in user-data
+## b.) add sources in /etc/apt/sources.list.d
+## c.) make changes to template file /etc/cloud/templates/sources.list.tmpl
+ 
+# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
+# newer versions of the distribution.
+deb http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal main restricted
+# deb-src http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal main restricted
+ 
+## Major bug fix updates produced after the final release of the
+## distribution.
+deb http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal-updates main restricted
+# deb-src http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal-updates main restricted
+ 
+## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
+## team. Also, please note that software in universe WILL NOT receive any
+## review or updates from the Ubuntu security team.
+deb http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal universe
+# deb-src http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal universe
+deb http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal-updates universe
+# deb-src http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal-updates universe
+ 
+## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
+## team, and may not be under a free licence. Please satisfy yourself as to
+## your rights to use the software. Also, please note that software in
+## multiverse WILL NOT receive any review or updates from the Ubuntu
+## security team.
+deb http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal multiverse
+# deb-src http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal multiverse
+deb http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal-updates multiverse
+# deb-src http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal-updates multiverse
+ 
+## N.B. software from this repository may not have been tested as
+## extensively as that contained in the main release, although it includes
+## newer versions of some applications which may provide useful features.
+## Also, please note that software in backports WILL NOT receive any review
+## or updates from the Ubuntu security team.
+deb http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+# deb-src http://ap-northeast-2.ec2.archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+ 
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+# deb http://archive.canonical.com/ubuntu focal partner
+# deb-src http://archive.canonical.com/ubuntu focal partner
+ 
+deb http://security.ubuntu.com/ubuntu focal-security main restricted
+# deb-src http://security.ubuntu.com/ubuntu focal-security main restricted
+deb http://security.ubuntu.com/ubuntu focal-security universe
+# deb-src http://security.ubuntu.com/ubuntu focal-security universe
+deb http://security.ubuntu.com/ubuntu focal-security multiverse
+# deb-src http://security.ubuntu.com/ubuntu focal-security multiverse
+```
+
+
+## Docker hub 이미지 pull
+참고: https://hub.docker.com/_/buildpack-deps
+
+```bash
+#docker.sock 소켓 권한 추가(Linux)
+sudo chmod 666 /var/run/docker.sock
+```
+
+```bash
+docker login
+```
+
+```bash
+docker pull buildpack-deps
+```
+
+
+## AWS ECR에 이미지 등록 (buildpack-deps : curl을 위함)
+
+```bash
+aws configure
+```
+
+```bash
+AWS Access Key ID [None]: XXXXX
+AWS Secret Access Key [None]: XXXXX
+Default region name [None]: {REGION}
+Default output format [None]:  json
+```
+
+```bash
+#ECR login
+aws ecr get-login-password --region {REGION} --no-verify-ssl | docker login --username AWS --password-stdin {ACCOUNT}.dkr.ecr.{REGION}.amazonaws.com
+```
+
+
+### buildpack-deps ECR 생성
+```bash
+aws ecr create-repository --repository-name buildpack-deps --image-scanning-configuration scanOnPush=true --region {REGION} --no-verify-ssl
+```
+
+
+### buildpack-deps ECR에 로컬 이미지 Push
+```bash
+#ECR 로그인 정보 확인
+cat ~/.docker/config.json 
+
+#로컬 이미지 확인
+docker images
+
+#이미지 이름 변경
+docker tag buildpack-deps:latest {ACCOUNT}.dkr.ecr.{REGION}.amazonaws.com/buildpack-deps:atest
+docker tag buildpack-deps:latest {ACCOUNT}.dkr.ecr.{REGION}.amazonaws.com/buildpack-deps:0.0.1
+
+#이미지 변경확인
+docker images
+
+#이미지 변경확인
+docker push {ACCOUNT}.dkr.ecr.{REGION}.amazonaws.com/buildpack-deps:0.0.1
+```
+
+
+## AWS Bastion을 통해 Cronjob 생성
+
+### predictCronjob.yaml 파일
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: batch-predict
+spec:
+  schedule: "*/1 * * * *" #분 시 일 월 년
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: batch-predict
+            image: {ACCOUNT}.dkr.ecr.{REGION}.amazonaws.com/buildpack-deps:0.0.1
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            - -c
+            - curl https://{GATEWAY_ID}.execute-api.{REGION}.amazonaws.com/Prod/predict
+          restartPolicy: OnFailure
+```
+
+
+### PredictCronjob.yaml 로 Kubernetes Cronjob 생성
+```bash
+kubectl apply -f predictCronjob.yaml 
+```
+
+```
+NAME                                    READY   STATUS      RESTARTS   AGE
+batch-predict-27668591-vp57l   0/1     Completed   0          31s
+```
+
+
+### Cronjob Pod 내 실행로그 확인
+
+```bash
+kubectl logs batch-predict-27668591-vp57l
+```
+
+### Kubernetes Cronjob 생성 시간에 Pod 확인 
+```bash
+kubectl get pods
+```
+
+```
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    36  100    36    0     0      5      0  0:00:07  0:00:06  0:00:01     9
+{"message": “Predict”}
+```
 
 
 
