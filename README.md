@@ -588,26 +588,26 @@ spec:
 ```
 
 
-### PredictCronjob.yaml 로 Kubernetes Cronjob 생성
+### forecastPredictCronjob.yaml 로 Kubernetes Cronjob 생성
 ```bash
-kubectl apply -f predictCronjob.yaml 
+kubectl apply -f forecastPredictCronjob.yaml
+```
+
+### Kubernetes Cronjob 생성 시간에 Pod 확인 
+```bash
+kubectl get pods
 ```
 
 ```
 NAME                                    READY   STATUS      RESTARTS   AGE
-batch-predict-27668591-vp57l   0/1     Completed   0          31s
+forecast-batch-predict-27668591-vp57l   0/1     Completed   0          31s
 ```
 
 
 ### Cronjob Pod 내 실행로그 확인
 
 ```bash
-kubectl logs batch-predict-27668591-vp57l
-```
-
-### Kubernetes Cronjob 생성 시간에 Pod 확인 
-```bash
-kubectl get pods
+kubectl logs forecast-batch-predict-27668591-vp57l
 ```
 
 ```
