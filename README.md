@@ -588,9 +588,9 @@ spec:
 ```
 
 
-### forecastPredictCronjob.yaml 로 Kubernetes Cronjob 생성
+### predictCronjob.yaml 로 Kubernetes Cronjob 생성
 ```bash
-kubectl apply -f forecastPredictCronjob.yaml
+kubectl apply -f predictCronjob.yaml
 ```
 
 ### Kubernetes Cronjob 생성 시간에 Pod 확인 
@@ -600,18 +600,18 @@ kubectl get pods
 
 ```
 NAME                                    READY   STATUS      RESTARTS   AGE
-forecast-batch-predict-27668591-vp57l   0/1     Completed   0          31s
+batch-predict-27668591-vp57l   0/1     Completed   0          31s
 ```
 
 
 ### Cronjob Pod 내 실행로그 확인
 
 ```bash
-kubectl logs forecast-batch-predict-27668591-vp57l
+kubectl logs batch-predict-27668591-vp57l
 ```
 
 ```
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+% Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
 100    36  100    36    0     0      5      0  0:00:07  0:00:06  0:00:01     9
 {"message": “Predict”}
